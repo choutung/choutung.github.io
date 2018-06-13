@@ -11,7 +11,7 @@
 
     <title>
         
-        About - undefined
+        拉黑证书 - undefined
         
     </title>
 
@@ -71,7 +71,7 @@
                     <span>存档</span>
                 </a>
             </li>
-            <li  class=active >
+            <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
                     <span>关于</span>
@@ -87,6 +87,10 @@
             
         </ul>
     </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#相关下载-https-codeload-github-com-chengr28-RevokeChinaCerts-zip-master"><span class="toc-text">相关下载  https://codeload.github.com/chengr28/RevokeChinaCerts/zip/master</span></a></li></ol>
+</div>
     
 </div>
 
@@ -111,13 +115,37 @@
     <div class="index-middle">
         <!-- Main Content -->
         
-<div class="post-content ">
-    
-    
-    <div id="comment-container">
+
+
+<div class="post-container">
+    <div class="post-title">
+        拉黑证书
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-05-22 23:01:42</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>RevokeChinaCerts 提供了多种证书屏蔽方式防流氓软件的侵袭。它通过吊销证书的方式使用户远离恶意软件（比如某度）的侵袭。 Online certificates 在线证书，用于屏蔽 TLS 加密连接时所使用的证书。 Firefox online certificates 火狐浏览器在线证书，用于屏蔽 TLS 加密连接时所使用的证书(火狐) CodeSigning certificates 代码证书，用于屏蔽某软件发行商发行软件的运行。 Organization certificates 组织证书，用于屏蔽部分组织和企业的证书。 Update certificate lists 更新证书列表，用于更新系统内置证书信任列表和证书吊销列表。 <strong>使用方法</strong>： 使用管理员权限运行对应脚本。 需要安装.NET Framework 4.0 以上版本。 <strong>批处理/脚本类型</strong></p>
+<ol>
+<li>Base/基础版本：删除信任并吊销了几个可疑的根证书、中级证书或假证书</li>
+<li>Extended/扩展版本：删除信任并吊销了所有可疑的根证书、中级证书或假证书 建议使用此版本（GoAgent会失效）</li>
+<li>All/完全版本：删除信任并吊销了所有可疑的来自大中华地区的证书 此版本用于测试不建议使用</li>
+<li>Restore/恢复版本：可恢复所有在上面几个版本中所有被加入吊销列表的证书的使用</li>
+</ol>
+<p>安装前请关闭或卸载杀毒软件。 涉及到的公司/软件证书： <a href="http://www.coolapp.wang/go/olwi" target="_blank" rel="noopener">在线证书</a> <a href="http://www.coolapp.wang/go/cfh7" target="_blank" rel="noopener">软件证书</a> 项目首页：<a href="http://www.coolapp.wang/go/hxp1" target="_blank" rel="noopener">戳我</a></p>
+<h2 id="相关下载-https-codeload-github-com-chengr28-RevokeChinaCerts-zip-master"><a href="#相关下载-https-codeload-github-com-chengr28-RevokeChinaCerts-zip-master" class="headerlink" title="相关下载  https://codeload.github.com/chengr28/RevokeChinaCerts/zip/master"></a>相关下载  <a href="https://codeload.github.com/chengr28/RevokeChinaCerts/zip/master" target="_blank" rel="noopener">https://codeload.github.com/chengr28/RevokeChinaCerts/zip/master</a></h2><p>转载自 拉黑证书 让你的电脑再也装不上某些软件—RevokeChinaCerts - 云库网 <a href="http://www.coolapp.wang/pc/pctools/1017.html" target="_blank" rel="noopener">http://www.coolapp.wang/pc/pctools/1017.html</a></p>
+
+        
+        <div id="comment-container">
+        </div>
     </div>
 </div>
-
     </div>
 </div>
 
@@ -156,7 +184,7 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="/js/index.js"></script>

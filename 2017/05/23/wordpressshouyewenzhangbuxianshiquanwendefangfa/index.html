@@ -11,7 +11,7 @@
 
     <title>
         
-        About - undefined
+        WordPress首页文章不显示全文的方法 - undefined
         
     </title>
 
@@ -71,7 +71,7 @@
                     <span>存档</span>
                 </a>
             </li>
-            <li  class=active >
+            <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
                     <span>关于</span>
@@ -87,6 +87,10 @@
             
         </ul>
     </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#I-more标签"><span class="toc-text">I. more标签</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#II-自造方法"><span class="toc-text">II. 自造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#III-the-excerpt"><span class="toc-text">III. the_excerpt()</span></a></li></ol>
+</div>
     
 </div>
 
@@ -111,13 +115,56 @@
     <div class="index-middle">
         <!-- Main Content -->
         
-<div class="post-content ">
-    
-    
-    <div id="comment-container">
+
+
+<div class="post-container">
+    <div class="post-title">
+        WordPress首页文章不显示全文的方法
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-05-23 22:00:06</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>解决办法有三种：</p>
+<ol>
+<li><p>more标签</p>
+</li>
+<li><p>自己写方法截取文字</p>
+</li>
+<li><p>the_excerpt()</p>
+</li>
+</ol>
+<h2 id="I-more标签"><a href="#I-more标签" class="headerlink" title="I. more标签"></a>I. more标签</h2><p>以下引用sumile_ting 的话：</p>
+<p>这种方法是在每次写文章时在文章中插入一个More标签。</p>
+<p>添加More标签的方法：</p>
+<blockquote>
+<p>写文章时，在需要作为摘要的地方点击编辑器中的More标签，或在HTML编辑状态加加入&lt;!–more–&gt;，或者直接按Alt+Shift+T,3种方法任选其一。</p>
+</blockquote>
+<p>这种方法使用起来太麻烦，要求每一篇文章都得手动加，一不小心可能就忘记了。还不如修改主题模板来的方便快捷。</p>
+<h2 id="II-自造方法"><a href="#II-自造方法" class="headerlink" title="II. 自造方法"></a>II. 自造方法</h2><p>自己写方法必须对function.php和content.php做改写，先找到</p>
+<p>&lt;?php the_content(); ?&gt;</p>
+<p>the_content()方法返回了文章的内容，处理一下就可以限制字数了，具体方法请自查。</p>
+<p>但是对于我还是不合适，因为此时文章还没有被插件渲染，文章内的代码会被直接以纯文本的形式展示，很不和谐。<br>所以这个方案，pass</p>
+<h2 id="III-the-excerpt"><a href="#III-the-excerpt" class="headerlink" title="III. the_excerpt()"></a>III. the_excerpt()</h2><p>此方法是wordpress显示文章摘要的API，效果与the_content() 一样，只是这个函数对中文支持不好，需要处理一下</p>
+<p>以下是步骤：</p>
+<p>方法2的the_content()修改为the_excerpt()<br>在function下加入以下代码</p>
+<p>function custom_excerpt_length( $length ) {    return 200;<br>}<br>add_filter( ‘excerpt_length’, ‘custom_excerpt_length’, 999 );</p>
+<p>给readmore加个链接，同样在functions.php中添加：</p>
+<p>function new_excerpt_more( $more ) {    return ‘<a href="' . get_permalink() . '">阅读全文</a>‘;<br>}<br>add_filter(‘excerpt_more’, ‘new_excerpt_more’);</p>
+<p>转载自WordPress首页文章不显示全文的方法 - 老高的技术博客  </p>
+<p><a href="https://blog.phpgao.com/wordpress_excerpt.html" target="_blank" rel="noopener">https://blog.phpgao.com/wordpress_excerpt.html</a></p>
+
+        
+        <div id="comment-container">
+        </div>
     </div>
 </div>
-
     </div>
 </div>
 
@@ -156,7 +203,7 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="/js/index.js"></script>

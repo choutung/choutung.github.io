@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        win7及以上系统一键关闭445、135、137、138、139端口（增加重新开启命令） - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>choutung</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        win7及以上系统一键关闭445、135、137、138、139端口（增加重新开启命令）
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-05-14 00:04:25</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#bat" title="bat">bat</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>原帖来自<a href="http://www.52pojie.cn/thread-607819-1-1.html" target="_blank" rel="noopener">win7及以上系统一键关闭445、135、137、138、139端口 - 『福利经验』 - 吾爱破解 - LCG - LSG |安卓破解|病毒分析|破解软件|www.52pojie.cn</a> 本文略作修改 <strong>附件1：程序下载地址：</strong><a href="http://47.94.16.124/wordpress/1/close.bat" target="_blank" rel="noopener"><strong>关闭常见的危险端口.bat</strong></a><strong>附件2：相关端口科普</strong>  137端口 137端口的主要作用是在局域网中提供计算机的名字或IP地址查询服务，一般安装了NetBIOS协议后，该端口会自动处于开放状态。 要是非法入侵者知道目标主机的IP地址，并向该地址的137端口发送一个连接请求时，就可能获得目标主机的相关名称信息。例如目标主机的计算机名称，注册该目标主机的用户信息，目标主机本次开机、关机时间等。此外非法入侵者还能知道目标主机是否是作为文件服务器或主域控制器来使用。 139端口 139端口是一种TCP端口，该端口在你通过网上邻居访问局域网中的共享文件或共享打印机时就能发挥作用。 139端口一旦被Internet上的某个攻击者利用的话，就能成为一个危害极大的安全漏洞。因为黑客要是与目标主机的139端口建立连接的话，就很有可能浏览到指定网段内所有工作站中的全部共享信息，甚至可以对目标主机中的共享文件夹进行各种编辑、删除操作，倘若攻击者还知道目标主机的IP地址和登录帐号的话，还能轻而易举地查看到目标主机中的隐藏共享信息。 138端口 137、138端口都属于UDP端口，它们在局域网中相互传输文件信息时，就会发生作用。而138端口的主要作用就是提供NetBIOS环境下的计算机名浏览功能。 非法入侵者要是与目标主机的138端口建立连接请求的话，就能轻松获得目标主机所处的局域网网络名称以及目标主机的计算机名称。有了计算机名称，其对应的IP地址也就能轻松获得。如此一来，就为黑客进一步攻击系统带来了便利。 445端口 445端口也是一种TCP端口，该端口在Windows 2000 Server或Windows Server 2003系统中发挥的作用与139端口是完全相同的。具体地说，它也是提供局域网中文件或打印机共享服务。不过该端口是基于CIFS协议（通用因特网文件系统协议）工作的，而139端口是基于SMB协议（服务器协议族）对外提供共享服务。同样地，攻击者与445端口建立请求连接，也能获得指定局域网内的各种共享信息<strong>附件3：源代码：</strong> </p>
+<p>@echo off  </p>
+<blockquote>
+<p>nul 2&gt;&amp;1 “%SYSTEMROOT%\system32\cacls.exe” “%SYSTEMROOT%\system32\config\system” </p>
+</blockquote>
+<p>if ‘%errorlevel%’ NEQ ‘0’ (<br>    goto UACPrompt<br>) else ( goto gotAdmin )  </p>
+<p>:UACPrompt<br>    echo Set UAC = CreateObject^(“Shell.Application”^) &gt; “%temp%\getadmin.vbs”<br>    echo UAC.ShellExecute “%~s0”, “”, “”, “runas”, 1 &gt;&gt; “%temp%\getadmin.vbs”<br>    “%temp%\getadmin.vbs”<br>    exit /B </p>
+<p>:gotAdmin<br>    if exist “%temp%\getadmin.vbs” ( del “%temp%\getadmin.vbs” )<br>    pushd “%CD%”<br>    CD /D “%~dp0” </p>
+<p>:begin</p>
+<p>title 关闭常见的危险端口<br>echo.<br>echo 本批处理用于启动win7及其以上版本系统的防火墙并关闭常见的危险端口<br>echo 137端口<br>echo 137端口的主要作用是在局域网中提供计算机的名字或IP地址查询服务，一般安装了NetBIOS协议后，该端口会自动处于开放状态。<br>要是非法入侵者知道目标主机的IP地址，并向该地址的137端口发送一个连接请求时，就可能获得目标主机的相关名称信息。例如目标主机的计算机名称，注册该目标主机的用户信息，目标主机本次开机、关机时间等。此外非法入侵者还能知道目标主机是否是作为文件服务器或主域控制器来使用。<br>echo 139端口<br>echo 139端口是一种TCP端口，该端口在你通过网上邻居访问局域网中的共享文件或共享打印机时就能发挥作用。<br>139端口一旦被Internet上的某个攻击者利用的话，就能成为一个危害极大的安全漏洞。因为黑客要是与目标主机的139端口建立连接的话，就很有可能浏览到指定网段内所有工作站中的全部共享信息，甚至可以对目标主机中的共享文件夹进行各种编辑、删除操作，倘若攻击者还知道目标主机的IP地址和登录帐号的话，还能轻而易举地查看到目标主机中的隐藏共享信息。<br>echo 138端口<br>echo 137、138端口都属于UDP端口，它们在局域网中相互传输文件信息时，就会发生作用。而138端口的主要作用就是提供NetBIOS环境下的计算机名浏览功能。<br>echo 非法入侵者要是与目标主机的138端口建立连接请求的话，就能轻松获得目标主机所处的局域网网络名称以及目标主机的计算机名称。有了计算机名称，其对应的IP地址也就能轻松获得。如此一来，就为黑客进一步攻击系统带来了便利。<br>echo 445端口<br>echo 445端口也是一种TCP端口，该端口在Windows 2000 Server或Windows Server 2003系统中发挥的作用与139端口是完全相同的。具体地说，它也是提供局域网中文件或打印机共享服务。不过该端口是基于CIFS协议（通用因特网文件系统协议）工作的，而139端口是基于SMB协议（服务器协议族）对外提供共享服务。同样地，攻击者与445端口建立请求连接，也能获得指定局域网内的各种共享信息。<br>pause<br>cls<br>echo 正在启动防火墙 请稍候…<br>netsh advfirewall set allprofiles state on<br>echo 防火墙已经成功启动<br>echo.<br>echo 设置默认输入和输出策略<br>netsh advfirewall set allprofiles firewallpolicy allowinbound,allowoutbound<br>echo.<br>echo 正在关闭常见的危险端口 请稍候…<br>echo.<br>echo 关闭tcp协议的135端口<br>netsh advfirewall firewall add rule name=”deny tcp 135” dir=in protocol=tcp localport=135 action=block<br>echo 关闭tcp协议的137端口<br>netsh advfirewall firewall add rule name=”deny tcp 137” dir=in protocol=tcp localport=137 action=block<br>echo 关闭tcp协议的138端口<br>netsh advfirewall firewall add rule name=”deny tcp 138” dir=in protocol=tcp localport=138 action=block<br>echo 关闭tcp协议的139端口<br>netsh advfirewall firewall add rule name=”deny tcp 139” dir=in protocol=tcp localport=139 action=block<br>echo 关闭tcp协议的445端口<br>netsh advfirewall firewall add rule name=”deny tcp 445” dir=in protocol=tcp localport=445 action=block<br>echo 关闭udp协议的135端口<br>netsh advfirewall firewall add rule name=”deny udp 135” dir=in protocol=udp localport=135 action=block<br>echo 关闭udp协议的137端口<br>netsh advfirewall firewall add rule name=”deny udp 137” dir=in protocol=udp localport=137 action=block<br>echo 关闭udp协议的138端口<br>netsh advfirewall firewall add rule name=”deny udp 138” dir=in protocol=udp localport=138 action=block<br>echo 关闭udp协议的139端口<br>netsh advfirewall firewall add rule name=”deny udp 139” dir=in protocol=udp localport=139 action=block<br>echo 关闭udp协议的445端口<br>netsh advfirewall firewall add rule name=”deny udp 445” dir=in protocol=udp localport=445 action=block<br>echo.<br>echo 常见的危险端口已经关闭  请按住（win+R）运行  %windir%\system32\WF.msc ，点击入站规则，查看是否有deny开头的几个规则，如果有就是确实关闭了<br>pause<br>echo 按任意键退出<br>echo.</p>
+<p>  update：原作者更新版本，没看内容</p>
+<p><code>@`</code>echo<code></code>off `</p>
+<p><code>&gt;nul 2&gt;&amp;1</code> <code>&quot;%SYSTEMROOT%\system32\cacls.exe&quot;</code> <code>&quot;%SYSTEMROOT%\system32\config\system&quot;</code> </p>
+<p><code>if</code> <code>&#39;%errorlevel%&#39;</code> <code>NEQ</code> <code>&#39;0&#39;</code> <code>(</code></p>
+<p><code>goto UACPrompt</code></p>
+<p><code>)</code> <code>else</code> <code>( goto gotAdmin )</code></p>
+<p><code>:UACPrompt</code></p>
+<p><code>echo</code> <code>Set UAC = CreateObject^(`</code>“Shell.Application”<code></code>^) &gt;<code></code>“%temp%\getadmin.vbs”` </p>
+<p><code>echo</code> <code>UAC.ShellExecute</code> <code>&quot;%~s0&quot;`</code>,<code></code>“”<code>,` `&quot;&quot;</code>,<code></code>“runas”<code></code>, 1 &gt;&gt;<code></code>“%temp%\getadmin.vbs”` </p>
+<p><code>&quot;%temp%\getadmin.vbs&quot;</code> </p>
+<p><code>exit</code> <code>/B</code> </p>
+<p><code>:gotAdmin</code></p>
+<p><code>if</code> <code>exist</code> <code>&quot;%temp%\getadmin.vbs&quot;</code> <code>( del</code> <code>&quot;%temp%\getadmin.vbs&quot;</code> <code>)</code></p>
+<p><code>pushd</code> <code>&quot;%CD%&quot;</code> </p>
+<p><code>CD</code> <code>/D</code> <code>&quot;%~dp0&quot;</code> </p>
+<p><code>:begin</code></p>
+<p><code>color 3E</code></p>
+<p><code>title 防范ONION勒索的常见端口操作</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>:Menu</code></p>
+<p><code>echo</code>  <code>##############################################################################</code></p>
+<p><code>echo</code>  <code>##        本批处理用于处理win7及其以上版本系统防范ONION勒索的常见端口       ##</code></p>
+<p><code>echo</code>  <code>##############################################################################</code></p>
+<p><code>echo</code>  <code>##                           选择列表(退出&quot;q&quot;)                              ##</code></p>
+<p><code>echo</code>  <code>##            1.打开防火墙并关闭135_137_138_139_445端口                     ##</code></p>
+<p><code>echo</code>  <code>##            2.解除135_137_138_139_445端口的封锁                           ##</code></p>
+<p><code>echo</code>  <code>##            3.查看防火墙高级设置（查看入站规则）                          ##</code></p>
+<p><code>echo</code>  <code>##                                                                          ##</code></p>
+<p><code>echo</code>  <code>##               交流、反馈请回复帖子(R)访问  hfutwangwei                   ##</code></p>
+<p><code>echo</code>  <code>##                           吾爱破解 52pojie                               ##</code></p>
+<p><code>echo</code>  <code>##############################################################################</code></p>
+<p><code>:tabe0</code></p>
+<p><code>set</code> <code>/p</code> <code>choose=请输入你的选择(数字或q):</code></p>
+<p><code>if</code> <code>/I</code> <code>&quot;%choose%&quot;`</code>==<code></code>“1”<code></code>goto tabe1`</p>
+<p><code>if</code> <code>/I</code> <code>&quot;%choose%&quot;`</code>==<code></code>“2”<code></code>goto tabe2`</p>
+<p><code>if</code> <code>/I</code> <code>&quot;%choose%&quot;`</code>==<code></code>“3”<code></code>goto tabe3`</p>
+<p><code>if</code> <code>/I</code> <code>&quot;%choose%&quot;`</code>==<code></code>“q”<code></code>goto tabe4`</p>
+<p><code>rem</code></p>
+<p><code>echo</code> <code>输入错误，请重新输入!</code></p>
+<p><code>goto tabe0</code></p>
+<p><code>:tabe1</code></p>
+<p><code>cls</code></p>
+<p><code>echo</code> <code>正在启动防火墙 请稍候…</code></p>
+<p><code>sc config MpsSvc start= auto &gt; nul</code></p>
+<p><code>net start MpsSvc &gt; nul</code></p>
+<p><code>netsh advfirewall</code> <code>set</code> <code>allprofiles state on</code></p>
+<p><code>echo</code> <code>防火墙已经成功启动</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>设置默认输入和输出策略</code></p>
+<p><code>netsh advfirewall</code> <code>set</code> <code>allprofiles firewallpolicy allowinbound,allowoutbound</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>正在关闭常见的危险端口 请稍候…</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>关闭tcp协议的135端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny tcp 135”<code></code>dir<code>=</code>in<code></code>protocol=tcp localport=135 action=block`</p>
+<p><code>echo</code> <code>关闭tcp协议的137端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny tcp 137”<code></code>dir<code>=</code>in<code></code>protocol=tcp localport=137 action=block`</p>
+<p><code>echo</code> <code>关闭tcp协议的138端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny tcp 138”<code></code>dir<code>=</code>in<code></code>protocol=tcp localport=138 action=block`</p>
+<p><code>echo</code> <code>关闭tcp协议的139端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny tcp 139”<code></code>dir<code>=</code>in<code></code>protocol=tcp localport=139 action=block`</p>
+<p><code>echo</code> <code>关闭tcp协议的445端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny tcp 445”<code></code>dir<code>=</code>in<code></code>protocol=tcp localport=445 action=block`</p>
+<p><code>reg add HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters</code> <code>/f</code> <code>/v</code> <code>SMBDeviceEnabled</code> <code>/t</code> <code>REG_DWORD</code> <code>/d</code> <code>0 &gt; NUL</code></p>
+<p><code>echo</code> <code>关闭udp协议的135端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny udp 135”<code></code>dir<code>=</code>in<code></code>protocol=udp localport=135 action=block`</p>
+<p><code>echo</code> <code>关闭udp协议的137端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny udp 137”<code></code>dir<code>=</code>in<code></code>protocol=udp localport=137 action=block`</p>
+<p><code>echo</code> <code>关闭udp协议的138端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny udp 138”<code></code>dir<code>=</code>in<code></code>protocol=udp localport=138 action=block`</p>
+<p><code>echo</code> <code>关闭udp协议的139端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny udp 139”<code></code>dir<code>=</code>in<code></code>protocol=udp localport=139 action=block`</p>
+<p><code>echo</code> <code>关闭udp协议的445端口</code></p>
+<p><code>netsh advfirewall firewall add rule name=`</code>“deny udp 445”<code></code>dir<code>=</code>in<code></code>protocol=udp localport=445 action=block`</p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>常见的危险端口已经关闭</code></p>
+<p><code>ECHO.&amp;ECHO 感谢你使用!任意键返回 &amp;&amp;PAUSE&gt;NUL &amp;&amp; CLS &amp;&amp; GOTO MENU</code></p>
+<p><code>:tabe2</code></p>
+<p><code>cls</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>正在解除135_137_138_139_445端口的封锁 请稍候…</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>解除135端口的封锁</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=tcp localport=135 &gt; nul</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=udp localport=135 &gt; nul</code></p>
+<p><code>echo</code> <code>解除137端口的封锁</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=tcp localport=137 &gt; nul</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=udp localport=137 &gt; nul</code></p>
+<p><code>echo</code> <code>解除138端口的封锁</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=tcp localport=138 &gt; nul</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=udp localport=138 &gt; nul</code></p>
+<p><code>echo</code> <code>解除139端口的封锁</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=tcp localport=139 &gt; nul</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=udp localport=139 &gt; nul</code></p>
+<p><code>echo</code> <code>解除445端口的封锁</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=tcp localport=445 &gt; nul</code></p>
+<p><code>netsh advfirewall firewall delete rule name=all protocol=udp localport=445 &gt; nul</code></p>
+<p><code>reg delete HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters</code> <code>/v</code> <code>SMBDeviceEnabled</code> <code>/f</code> <code>&gt; NUL 2&gt; NUL</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>已经解除135_137_138_139_445端口的封锁</code></p>
+<p><code>ECHO.&amp;ECHO 感谢你使用!任意键返回 &amp;&amp;PAUSE&gt;NUL &amp;&amp; CLS &amp;&amp; GOTO MENU</code></p>
+<p><code>:tabe3</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>echo</code> <code>正在查看防火墙高级设置（查看入站规则） 请稍候…</code></p>
+<p><code>echo</code> <code>您可能需要手动刷新下入站规则（F5）</code></p>
+<p><code>echo</code> <code>已经正在查看防火墙高级设置（查看入站规则）</code></p>
+<p><code>echo</code> <code>您可关闭防火墙高级设置返回</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>&quot;%windir%\system32\WF.msc&quot;</code></p>
+<p><code>echo`</code>.`</p>
+<p><code>ECHO.&amp;ECHO 感谢你使用!任意键返回 &amp;&amp;PAUSE&gt;NUL &amp;&amp; CLS &amp;&amp; GOTO MENU</code></p>
+<p><code>:tabe4</code></p>
+<p><code>exit</code></p>
+
+        
+        <div id="comment-container">
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</html>

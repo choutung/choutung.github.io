@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        UML用例图相关知识 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>choutung</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        UML用例图相关知识
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-05-20 02:59:00</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>用例图主要用来描述“用户、需求、系统功能单元”之间的关系。它展示了一个外部用户能够观察到的系统功能模型图。</p>
+<p>　　【用途】：帮助开发团队以一种可视化的方式理解系统的功能需求。</p>
+<p>　　用例图所包含的元素如下：</p>
+<p><strong>　　1. **</strong>参与者(Actor)**</p>
+<p>　　表示与您的应用程序或系统进行交互的用户、组织或外部系统。用一个小人表示。</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015202157.gif" alt=""></p>
+<p><strong>　　2. **</strong>用例(Use Case)**</p>
+<p> 　　用例就是外部可见的系统功能，对系统提供的服务进行描述。用椭圆表示。</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015210973.gif" alt=""></p>
+<p><strong>　　3. 子系统(Subsystem)</strong></p>
+<p>　　用来展示系统的一部分功能，这部分功能联系紧密。</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015215321.gif" alt=""></p>
+<p><strong>　　4. **</strong>关系**</p>
+<p>　　用例图中涉及的关系有：关联、泛化、包含、扩展。</p>
+<p>　　如下表所示：</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015241550.png" alt=""></p>
+<p><strong>　　a. 关联(Association)</strong></p>
+<p>　　表示参与者与用例之间的通信，任何一方都可发送或接受消息。</p>
+<p>　　【箭头指向】：指向消息接收方</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015250613.gif" alt=""></p>
+<p><strong>　　b. 泛化(Inheritance)</strong></p>
+<p>　　就是通常理解的继承关系，子用例和父用例相似，但表现出更特别的行为；子用例将继承父用例的所有结构、行为和关系。子用例可以使用父用例的一段行为，也可以重载它。父用例通常是抽象的。</p>
+<p>　　【箭头指向】：指向父用例</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015260081.gif" alt=""></p>
+<p><strong>　　c. 包含(Include)</strong></p>
+<p>包含关系用来把一个较复杂用例所表示的功能分解成较小的步骤。</p>
+<p>　　【箭头指向】：指向分解出来的功能用例</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015265841.gif" alt=""></p>
+<p><strong>　　d. 扩展(Extend)</strong></p>
+<p>　　扩展关系是指用例功能的延伸，相当于为基础用例提供一个附加功能。</p>
+<p>　　【箭头指向】：指向基础用例</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015274296.gif" alt=""></p>
+<p><strong>　　e. 依赖(Dependency)</strong></p>
+<p>　　以上4种关系，是UML定义的标准关系。但VS2010的用例模型图中，添加了依赖关系，用带箭头的虚线表示，表示源用例依赖于目标用例。</p>
+<p>　　【箭头指向】：指向被依赖项</p>
+<p><strong><img src="http://pic001.cnblogs.com/images/2012/1/2012013015290255.gif" alt="">  
+</strong></p>
+<p><strong>　　5. 项目(Artifact)</strong></p>
+<p>　　用例图虽然是用来帮助人们形象地理解功能需求，但却没多少人能够通看懂它。很多时候跟用户交流甚至用Excel都比用例图强，VS2010中引入了“项目”这样一个元素，以便让开发人员能够在用例图中链接一个普通文档。</p>
+<p>　　用依赖关系把某个用例依赖到项目上：</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015295762.gif" alt=""></p>
+<p>　　然后把项目-》属性 的Hyperlink设置到你的文档上；</p>
+<p>　　这样当你在用例图上双击项目时，就会打开相关联的文档。</p>
+<p><strong>　　6. 注释(Comment)</strong></p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015305290.gif" alt=""> </p>
+<p><strong>　　包含(include)**</strong>、扩展(extend)<strong>**、泛化(Inheritance)</strong> <strong>的区别：</strong></p>
+<p>　　条件性：泛化中的子用例和include中的被包含的用例会无条件发生，而extend中的延伸用例的发生是有条件的；</p>
+<p>　　直接性：泛化中的子用例和extend中的延伸用例为参与者提供直接服务，而include中被包含的用例为参与者提供间接服务。</p>
+<p>　　对extend而言，延伸用例并不包含基础用例的内容，基础用例也不包含延伸用例的内容。</p>
+<p>　　对Inheritance而言，子用例包含基础用例的所有内容及其和其他用例或参与者之间的关系；</p>
+<p><strong>　　一个用例图示例：</strong></p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015315117.gif" alt=""> </p>
+<p><strong>　　牢骚：</strong></p>
+<p>　　感觉用例图还不成熟，并不能很好地表达系统的需求， 没有UML背景的用户几乎不知道画的是些什么。</p>
+<p>　　其次，包含关系、扩展关系的箭头符号竟然是同样的箭头，仅靠上方写个文字来加以区别，翻译成其他语言的话，几乎就不知道代表什么意思。扩展关系的箭头朝向也很难理解，为何要指向基用例，而不指向扩展用例。</p>
+<p>　　VS2010添加的“项目”元素，是个很好的创新，能够在用例图中关联word, excel这些文档。但为什么不把这些功能直接集成到用例里面，双击用例就弹出一份文档岂不更容易理解，非要画蛇添足地加一个元件，仅仅为了提供个链接功能。 </p>
+<p><strong>　　用例描述表：</strong></p>
+<p>　　鉴于用列图并不能清楚地表达功能需求，开发中大家通常用描述表来补充某些不易表达的用例，下图的表给大家提供一个参考：</p>
+<p><img src="http://pic001.cnblogs.com/images/2012/1/2012013015331348.gif" alt=""></p>
+<p>UML用例图总结<em>知识库</em>博客园</p>
+<p><a href="http://kb.cnblogs.com/page/129491/UML" target="_blank" rel="noopener">http://kb.cnblogs.com/page/129491/UML</a></p>
+
+        
+        <div id="comment-container">
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</html>

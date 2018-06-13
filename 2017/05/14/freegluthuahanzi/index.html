@@ -11,7 +11,7 @@
 
     <title>
         
-        About - undefined
+        Freeglut画汉字 - undefined
         
     </title>
 
@@ -71,7 +71,7 @@
                     <span>存档</span>
                 </a>
             </li>
-            <li  class=active >
+            <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
                     <span>关于</span>
@@ -87,6 +87,10 @@
             
         </ul>
     </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
     
 </div>
 
@@ -111,13 +115,50 @@
     <div class="index-middle">
         <!-- Main Content -->
         
-<div class="post-content ">
-    
-    
-    <div id="comment-container">
+
+
+<div class="post-container">
+    <div class="post-title">
+        Freeglut画汉字
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-05-14 18:48:17</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Freeglut" title="Freeglut">Freeglut</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>//来自<a href="http://www.it610.com/article/5184066.htm" target="_blank" rel="noopener">http://www.it610.com/article/5184066.htm</a></p>
+<p>#include&lt;Windows.h&gt;</p>
+<p>#include&lt;gl/glut.h&gt;</p>
+<p>#pragma comment(linker, “/subsystem:\“windows\“ /entry:\“mainCRTStartup\“”)</p>
+<p>#define Max_Char 128<br>void PrintWord(const char <em>str)<br>{<br>    static GLuint GLlists;<br>    wchar_t </em>wstring;<br>    GLlists=glGenLists(1);<br>    int len=0;<br>    for(int i=0;str[i]!=’\0’;i++)<br>    {<br>        if(IsDBCSLeadByte(str[i]))//判断是否双字节<br>            ++i;<br>        ++len;<br>    }<br>    wstring=(wchar_t <em>)malloc((len+1)</em>sizeof(wchar_t));<br>    MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,str,-1,wstring,len);//将字符串转换为双字节<br>    wstring[len]=L’\0’;//字符串末尾添加’\0’结束符</p>
+<pre><code>for(int i=0;i&lt;len;i++)
+{
+    wglUseFontBitmapsW(wglGetCurrentDC(),wstring\[i\],1,GLlists);//设置显示列表字符
+    glCallList(GLlists);
+}
+free(wstring);//释放内存
+glDeleteLists(GLlists,1);//销毁显示列表
+</code></pre><p>}<br>void selectFont(int size, int charset, const char* face) {<br>    HFONT hFont = CreateFontA(size, 0, 0, 0, 500, 0, 0, 0,<br>        charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,<br>        DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, face);<br>    HFONT hOldFont = (HFONT)SelectObject(wglGetCurrentDC(), hFont);<br>    DeleteObject(hOldFont);<br>}</p>
+<p>void init(void)<br>{<br>    glClearColor(0.0,0.0,0.0,0.0);<br>    glShadeModel(GL_SMOOTH);<br>}</p>
+<p>void disply()<br>{<br>    glClear(GL_COLOR_BUFFER_BIT);<br>    selectFont(48, ANSI_CHARSET, “黑体”); //调用参数为 字号 字符集 字体<br>    glRasterPos2f(-0.1f, 0.0f);<br>    glColor3f(1.0,0.0,0.0);<br>    PrintWord(“你好么？”);<br>    glFlush();<br>}</p>
+<p>int main(int argc, char** argv)<br>{<br> glutInit(&amp;argc,argv);<br> glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);//指定显示模式<br> glutInitWindowSize(500,500);//指定窗口大小<br> glutInitWindowPosition(100,100);//指定窗口左上角位置<br> glutCreateWindow(“OpenGL”);//创建窗口标题为OpenGL的窗口<br> init();<br> glutDisplayFunc(disply);<br> glutMainLoop();<br> return 0;<br>}</p>
+
+        
+        <div id="comment-container">
+        </div>
     </div>
 </div>
-
     </div>
 </div>
 
@@ -156,7 +197,7 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="/js/index.js"></script>
