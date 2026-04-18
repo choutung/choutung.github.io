@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>账单分析工具</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f5;--card:#fff;--border:#e4e7eb;
+  --primary:#1677ff;--green:#52c41a;--red:#ff4d4f;--orange:#fa8c16;--purple:#722ed1;
+  --text:#1d2129;--text2:#4e5969;--text3:#86909c;
+  --radius:8px;--shadow:0 2px 8px rgba(0,0,0,.08)
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1{font-size:1.6rem;font-weight:700}
+h2{font-size:1.15rem;font-weight:600;margin-bottom:12px}
+
+/* ── layout ── */
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+
+/* ── header ── */
+.site-header{text-align:center;padding:32px 0 24px}
+.site-header p{color:var(--text3);margin-top:6px;font-size:.9rem}
+
+/* ── upload grid ── */
+.upload-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:24px}
+.upload-card{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+.upload-card:hover,.upload-card.hover{border-color:var(--primary);background:#f0f7ff}
+.upload-card.loaded{border-color:var(--green);background:#f6ffed}
+.upload-badge{font-size:2rem;margin-bottom:8px}
+.upload-title{font-weight:600;font-size:1rem;margin-bottom:4px}
+.upload-hint{color:var(--text3);font-size:.8rem}
+.upload-status{margin-top:10px;font-size:.82rem;color:var(--green);min-height:1.2em}
+.upload-status.err{color:var(--red)}
+.upload-card input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+/* ── analyze button ── */
+.btn-analyze{display:block;margin:24px auto 0;padding:12px 40px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn-analyze:hover{opacity:.85}
+.btn-analyze:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── progress ── */
+#progress{text-align:center;padding:24px;color:var(--text2);display:none}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── stats row ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 16px}
+.stat-label{font-size:.8rem;color:var(--text3);margin-bottom:4px}
+.stat-value{font-size:1.5rem;font-weight:700}
+.stat-value.red{color:var(--red)}
+.stat-value.green{color:var(--green)}
+.stat-value.blue{color:var(--primary)}
+.stat-value.purple{color:var(--purple)}
+
+/* ── charts ── */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:700px){.charts-row{grid-template-columns:1fr}}
+.chart-wrap{height:280px;display:flex;align-items:center;justify-content:center}
+canvas{max-height:260px}
+
+/* ── filters ── */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.filters input[type=text],.filters input[type=date],.filters select{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem;color:var(--text);background:#fff}
+.filters label{display:flex;align-items:center;gap:4px;font-size:.85rem;cursor:pointer;user-select:none}
+.filters label input[type=checkbox]{accent-color:var(--primary)}
+.btn-reset{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:.84rem;cursor:pointer;color:var(--text2)}
+.btn-reset:hover{background:var(--bg)}
+
+/* ── table ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{background:var(--bg);padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);white-space:nowrap;border-bottom:2px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#fafafa}
+tr.grouped td{background:#f9f0ff}
+tr.grouped:hover td{background:#f0e8ff}
+
+/* ── badges ── */
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.72rem;font-weight:600;margin-right:3px;white-space:nowrap}
+.badge-ali{background:#e6f4ff;color:#1677ff}
+.badge-wx{background:#e8f8ed;color:#07c160}
+.badge-ab{background:#fff7e6;color:#fa8c16}
+.badge-hi{background:#f0f0ff;color:var(--purple)}
+.badge-med{background:#fffbe6;color:#d4a800}
+.badge-lo{background:#fff1f0;color:var(--red)}
+
+/* ── amount ── */
+.amt-exp{color:var(--red);font-weight:600}
+.amt-inc{color:var(--green);font-weight:600}
+.amt-neu{color:var(--text3)}
+
+/* ── pagination ── */
+.pagination{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}
+.pagination button{padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;font-size:.83rem}
+.pagination button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.page-info{font-size:.83rem;color:var(--text3)}
+
+/* ── misc ── */
+#results{display:none}
+.tag-group{display:flex;flex-wrap:wrap;gap:3px}
+.merchant{font-weight:500}
+.desc{color:var(--text2);font-size:.8rem;margin-top:2px;max-width:280px;word-break:break-all}
+.dedupe-icon{color:var(--purple);font-size:.75rem;cursor:help}
+.empty{text-align:center;padding:40px;color:var(--text3)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- ── Header ── -->
+<div class="site-header">
+  <h1>📊 账单分析工具</h1>
+  <p>所有数据在本地浏览器处理，不会上传至任何服务器 · 支持支付宝 / 微信 / 农行信用卡账单跨源去重</p>
+</div>
+
+<!-- ── Upload section ── -->
+<div class="card" id="upload-section">
+  <div class="upload-grid">
+
+    <div class="upload-card" id="ali-card">
+      <div class="upload-badge">🔵</div>
+      <div class="upload-title">支付宝账单</div>
+      <div class="upload-hint">CSV 文件（GBK 编码）</div>
+      <div class="upload-status" id="ali-status">点击或拖拽上传</div>
+      <input type="file" id="ali-file" accept=".csv">
+    </div>
+
+    <div class="upload-card" id="wx-card">
+      <div class="upload-badge">🟢</div>
+      <div class="upload-title">微信支付账单</div>
+      <div class="upload-hint">Excel 文件（.xlsx）</div>
+      <div class="upload-status" id="wx-status">点击或拖拽上传</div>
+      <input type="file" id="wx-file" accept=".xlsx,.xls">
+    </div>
+
+    <div class="upload-card" id="ab-card">
+      <div class="upload-badge">🟠</div>
+      <div class="upload-title">农行信用卡账单</div>
+      <div class="upload-hint">PDF 文件（可多选，所有月份）</div>
+      <div class="upload-status" id="ab-status">点击或拖拽上传</div>
+      <input type="file" id="ab-file" accept=".pdf" multiple>
+    </div>
+
+  </div>
+  <button class="btn-analyze" id="analyze-btn" disabled>上传至少一种账单后开始分析</button>
+</div>
+
+<!-- ── Progress ── -->
+<div id="progress">
+  <div class="spinner"></div>
+  <div id="progress-msg">正在解析账单数据…</div>
+</div>
+
+<!-- ── Results ── -->
+<div id="results">
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row"></div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="card">
+      <h2>月度支出</h2>
+      <div class="chart-wrap"><canvas id="chart-month"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>支出分类</h2>
+      <div class="chart-wrap"><canvas id="chart-cat"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <h2>交易明细</h2>
+
+    <!-- Filters -->
+    <div class="filters" id="filters">
+      <input type="text" id="f-search" placeholder="搜索商户/商品…" style="flex:1;min-width:140px">
+      <input type="date" id="f-from" title="开始日期">
+      <input type="date" id="f-to" title="结束日期">
+      <select id="f-type">
+        <option value="">全部类型</option>
+        <option value="支出">支出</option>
+        <option value="收入">收入</option>
+        <option value="不计收支">不计收支</option>
+      </select>
+      <select id="f-cat" id="f-cat">
+        <option value="">全部分类</option>
+      </select>
+      <label><input type="checkbox" id="f-ali" checked> 支付宝</label>
+      <label><input type="checkbox" id="f-wx" checked> 微信</label>
+      <label><input type="checkbox" id="f-ab" checked> 农行</label>
+      <label><input type="checkbox" id="f-dedup" checked> 合并重复</label>
+      <button class="btn-reset" id="f-reset">重置</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>金额</th>
+            <th>交易方 / 商品</th>
+            <th>分类</th>
+            <th>来源</th>
+            <th>支付方式</th>
+            <th>匹配</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+      <div id="tbl-empty" class="empty" style="display:none">暂无匹配的交易记录</div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+    <div class="page-info" id="page-info" style="text-align:center;margin-top:6px"></div>
+  </div>
+
+</div><!-- #results -->
+</div><!-- .wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────
+// PDF.js worker
+// ─────────────────────────────────────────────────────────
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ─────────────────────────────────────────────────────────
+// Globals
+// ─────────────────────────────────────────────────────────
+let _ali = [], _wx = [], _ab = [];
+let _groups = [];
+let _filtered = [];
+let _page = 1;
+const PAGE_SIZE = 50;
+let _chartMonth = null, _chartCat = null;
+
+// ─────────────────────────────────────────────────────────
+// Utilities
+// ─────────────────────────────────────────────────────────
+let _uid = 0;
+function uid() { return 'tx' + (++_uid); }
+
+function fmtAmt(n) {
+  return (n < 0 ? '−¥' : '¥') + Math.abs(n).toFixed(2);
+}
+
+function parseAmtStr(s) {
+  if (s == null || s === '') return NaN;
+  return parseFloat(String(s).replace(/[,，]/g,'').replace('¥','').trim());
+}
+
+// Shared: convert absolute amount + income/expense label to signed float
+function signAmount(amt, io) {
+  if (io === '支出') return -Math.abs(amt);
+  if (io === '收入') return Math.abs(amt);
+  return amt;
+}
+
+// YYMMDD → 'YYYY-MM-DD'
+function yymmddToDate(s) {
+  s = String(s).padStart(6,'0');
+  return '20' + s.slice(0,2) + '-' + s.slice(2,4) + '-' + s.slice(4,6);
+}
+
+// Normalize datetime string to ISO-ish 'YYYY-MM-DD HH:MM:SS'
+function normDate(d) {
+  if (!d) return '';
+  if (d instanceof Date) {
+    const p = n => String(n).padStart(2,'0');
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+
+           ' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  }
+  return String(d).trim().replace('T',' ');
+}
+
+function dateOnly(dt) { return String(dt || '').slice(0,10); }
+
+function dayDiff(a, b) {
+  return Math.abs((new Date(dateOnly(a)) - new Date(dateOnly(b))) / 86400000);
+}
+
+// Simple text similarity: Jaccard on 2-grams
+function sim(a, b) {
+  if (!a || !b) return 0;
+  const bg = s => { const r = new Set(); for(let i=0;i<s.length-1;i++) r.add(s.slice(i,i+2)); return r; };
+  const A = bg(a), B = bg(b);
+  let inter = 0;
+  for (const x of A) if (B.has(x)) inter++;
+  return inter / (A.size + B.size - inter + 0.0001);
+}
+
+function extractCard(payMethod) {
+  const m = (payMethod||'').match(/\((\d{4})\)/);
+  return m ? m[1] : '';
+}
+
+function isAgBankPayMethod(payMethod) {
+  return /农业银行|农行/.test(payMethod||'');
+}
+
+// ─────────────────────────────────────────────────────────
+// Category label map
+// ─────────────────────────────────────────────────────────
+const CAT_CN = {
+  '投资理财':'💰 投资理财','交通出行':'🚇 交通出行','餐饮美食':'🍜 餐饮',
+  '日用百货':'🛒 日用百货','服装服饰':'👗 服装','数码电器':'📱 数码',
+  '游戏娱乐':'🎮 娱乐','转账':'↔️ 转账','充值缴费':'⚡ 充值',
+  '医疗健康':'🏥 医疗','教育培训':'📚 教育','旅游住宿':'🏨 旅游',
+  '美容美发':'💄 美容','网上消费':'🛍️ 网购','退款':'↩️ 退款',
+  '分期':'📄 分期','还款':'💳 还款','其他':'📋 其他',
+};
+function catLabel(c) { return CAT_CN[c] || c || '其他'; }
+
+// ─────────────────────────────────────────────────────────
+// Alipay CSV Parser
+// ─────────────────────────────────────────────────────────
+function parseAlipayCSV(buffer) {
+  const text = new TextDecoder('gbk').decode(buffer);
+  const lines = text.split(/\r?\n/);
+
+  // Find header row
+  let headerIdx = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes('交易时间') && lines[i].includes('金额')) {
+      headerIdx = i; break;
+    }
+  }
+  if (headerIdx < 0) throw new Error('未找到支付宝账单表头');
+
+  const headers = lines[headerIdx].split(',').map(h => h.trim());
+  const idx = k => headers.findIndex(h => h.includes(k));
+
+  const iTime   = idx('交易时间');
+  const iCat    = idx('交易分类');
+  const iMchnt  = idx('交易对方');
+  const iDesc   = idx('商品说明');
+  const iIO     = idx('收/支');
+  const iAmt    = idx('金额');
+  const iPay    = idx('收/付款方式');
+  const iStat   = idx('交易状态');
+  const iOrd    = idx('交易订单号');
+  const iMOrd   = idx('商家订单号');
+  const iRem    = idx('备注');
+
+  const txns = [];
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    const raw = lines[i];
+    if (!raw.trim() || raw.startsWith('-')) continue;
+    const cols = raw.split(',');
+    if (cols.length < 8) continue;
+
+    const io = (cols[iIO]||'').trim();
+    const amtStr = (cols[iAmt]||'').trim();
+    const amt = parseAmtStr(amtStr);
+    if (isNaN(amt) || amt === 0) continue;
+
+    const signed = signAmount(amt, io);
+
+    txns.push({
+      id: uid(),
+      date: normDate((cols[iTime]||'').trim()),
+      amount: signed,
+      merchant: (cols[iMchnt]||'').trim(),
+      description: (cols[iDesc]||'').trim(),
+      category: (cols[iCat]||'').trim() || '其他',
+      payMethod: (cols[iPay]||'').trim(),
+      source: 'alipay',
+      incomeExpense: io || '不计收支',
+      status: (cols[iStat]||'').trim(),
+      orderId: (cols[iOrd]||'').replace(/\s/g,''),
+      merchantOrderId: (cols[iMOrd]||'').replace(/\s/g,''),
+      remark: (cols[iRem]||'').trim(),
+      cardLast4: extractCard((cols[iPay]||'').trim()),
+    });
+  }
+  return txns;
+}
+
+// ─────────────────────────────────────────────────────────
+// WeChat XLSX Parser
+// ─────────────────────────────────────────────────────────
+function parseWechatXLSX(buffer) {
+  const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+  // Find header row
+  let headerIdx = -1;
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.some(c => String(c).includes('交易时间')) &&
+        row.some(c => String(c).includes('金额'))) {
+      headerIdx = i; break;
+    }
+  }
+  if (headerIdx < 0) throw new Error('未找到微信账单表头');
+
+  const headers = rows[headerIdx].map(h => String(h).trim());
+  const idx = k => headers.findIndex(h => h.includes(k));
+
+  const iTime  = idx('交易时间');
+  const iType  = idx('交易类型');
+  const iMchnt = idx('交易对方');
+  const iDesc  = idx('商品');
+  const iIO    = idx('收/支');
+  const iAmt   = idx('金额');
+  const iPay   = idx('支付方式');
+  const iStat  = idx('当前状态');
+  const iOrd   = idx('交易单号');
+  const iMOrd  = idx('商户单号');
+  const iRem   = idx('备注');
+
+  const txns = [];
+  for (let i = headerIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || row.every(c => !c)) continue;
+
+    const io = String(row[iIO]||'').trim();
+    const amtRaw = String(row[iAmt]||'').replace('¥','').trim();
+    const amt = parseAmtStr(amtRaw);
+    if (isNaN(amt) || amt === 0) continue;
+
+    const signed = signAmount(amt, io);
+    const merchant = String(row[iMchnt]||'').trim();
+    const desc = String(row[iDesc]||'').trim();
+
+    // Infer category from type/merchant
+    const type = String(row[iType]||'').trim();
+    let cat = '其他';
+    if (type.includes('转账') || type.includes('红包')) cat = '转账';
+    else if (type.includes('提现')) cat = '充值缴费';
+    else if (merchant.includes('美团') || merchant.includes('饿了么')) cat = '餐饮美食';
+    else if (merchant.includes('滴滴') || merchant.includes('地铁') || merchant.includes('高铁')) cat = '交通出行';
+    else if (merchant.includes('淘宝') || merchant.includes('京东') || merchant.includes('拼多多')) cat = '日用百货';
+
+    txns.push({
+      id: uid(),
+      date: normDate(row[iTime]),
+      amount: signed,
+      merchant,
+      description: desc,
+      category: cat,
+      payMethod: String(row[iPay]||'').trim(),
+      source: 'wechat',
+      incomeExpense: io || '不计收支',
+      status: String(row[iStat]||'').trim(),
+      orderId: String(row[iOrd]||'').replace(/\s/g,''),
+      merchantOrderId: String(row[iMOrd]||'').replace(/\s/g,''),
+      remark: String(row[iRem]||'').trim(),
+      cardLast4: extractCard(String(row[iPay]||'')),
+    });
+  }
+  return txns;
+}
+
+// ─────────────────────────────────────────────────────────
+// AgBank PDF Parser
+// ─────────────────────────────────────────────────────────
+async function parseAgBankPDF(buffer) {
+  const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+  let fullText = '';
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const content = await page.getTextContent();
+    const lines = [];
+    let lastY = null;
+    for (const item of content.items) {
+      const y = Math.round(item.transform[5]);
+      if (lastY !== null && Math.abs(y - lastY) > 3) lines.push('\n');
+      lines.push(item.str);
+      lastY = y;
+    }
+    fullText += lines.join('') + '\n\n';
+  }
+  return parseAgBankText(fullText);
+}
+
+function parseAgBankText(text) {
+  // Normalize: collapse runs of whitespace except newlines
+  const lines = text.split(/\n/).map(l => l.replace(/\s+/g,' ').trim()).filter(l => l);
+
+  // Anchor pattern: 6-digit date, 6-digit date, 4-digit card, optional "附"
+  // followed later by AMOUNT/CNY and SETTLEMENT/CNY
+  const anchorRe = /^(\d{6})\s*(\d{6})\s*(\d{4})(附?)\s*(.*?)\s*([\d,]+\.?\d*)\s*\/CNY\s+(-?[\d,]+\.?\d*)\s*\/CNY\s*$/;
+
+  // Pre-scan anchors
+  const anchors = [];
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(anchorRe);
+    if (m) anchors.push({ i, tDate: m[1], pDate: m[2], card: m[3], inlineDesc: m[5].trim(), tranAmt: m[6], settAmt: m[7] });
+  }
+
+  // Determine section per anchor (still/消費/退货/分期/还款)
+  // Build section map: for each line index, what section is active?
+  const sectionAt = {}; // i → section
+  let curSec = '消费';
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (l.startsWith('●') || l.startsWith('•')) {
+      const s = l.replace(/[●•]/g,'').trim();
+      if (s) curSec = s;
+    }
+    sectionAt[i] = curSec;
+  }
+
+  const SKIP_LINE = /^(额度|账务|积分|刷卡金|Card|T Date|P Date|Sett|Curr|Deposit|Balance|Charge|Adjust|发自|转发|发件|日期:|主题:|收件|抄送|安全|感谢|尊敬|Statement|Credit|Payment|Min |New |Prev|授信|透支|信用|注：|客户|包括|您的|欢迎|拨打|如有|为了|境外|建议|出境|致电)/;
+  function isDescLine(l) {
+    return l && !l.match(/^\d{6}\s*\d{6}/) && !SKIP_LINE.test(l) &&
+           !l.startsWith('●') && !l.startsWith('•') &&
+           !l.match(/^[\d,]+\.?\d*\/CNY/) && l.length > 1 && l.length < 120;
+  }
+  // Lines starting a new entry description belong to the NEXT anchor as prefix, not as suffix of current.
+  // Handle both Unicode variants: ⽹ (U+2F6D, from some PDF extractors) and 网 (U+7F51, standard)
+  const FULL_DESC_RE = /^([⽹网]上消费|境外消费|退货|分期|还款)/;
+
+  // ── Pass 1: find suffix line indices for each anchor ──
+  const suffixIdxMap = new Map(); // ai -> Set<lineIdx>
+  for (let ai = 0; ai < anchors.length; ai++) {
+    const anchor = anchors[ai];
+    const nextAnchorLine = ai < anchors.length-1 ? anchors[ai+1].i : lines.length;
+    const consumed = new Set();
+    for (let i = anchor.i + 1; i < nextAnchorLine && i < anchor.i + 4; i++) {
+      const l = lines[i];
+      if (l.startsWith('●') || l.startsWith('•')) break;
+      if (isDescLine(l) && !FULL_DESC_RE.test(l) && l.length <= 40) consumed.add(i);
+      else break;
+    }
+    suffixIdxMap.set(ai, consumed);
+  }
+
+  const txns = [];
+  for (let ai = 0; ai < anchors.length; ai++) {
+    const anchor = anchors[ai];
+    const prevAnchorLine = ai > 0 ? anchors[ai-1].i : -1;
+    const nextAnchorLine = ai < anchors.length-1 ? anchors[ai+1].i : lines.length;
+
+    // Suffix line indices already claimed by the PREVIOUS anchor
+    const prevSuffixes = ai > 0 ? suffixIdxMap.get(ai-1) : new Set();
+
+    // Collect prefix desc lines between previous anchor and this one
+    let prefixParts = [];
+    for (let i = prevAnchorLine + 1; i < anchor.i; i++) {
+      if (prevSuffixes.has(i)) continue; // consumed as suffix of prev anchor
+      const l = lines[i];
+      if (l.startsWith('●') || l.startsWith('•')) { prefixParts = []; continue; }
+      if (isDescLine(l)) prefixParts.push(l);
+    }
+
+    // Suffix lines for this anchor
+    const suffixParts = [...suffixIdxMap.get(ai)].map(i => lines[i]);
+
+    const fullDesc = [...prefixParts, anchor.inlineDesc, ...suffixParts].filter(s => s).join('');
+    const section = sectionAt[anchor.i] || '消费';
+
+    // Parse amount: settAmt is negative for expenses
+    const settAmt = parseAmtStr(anchor.settAmt);
+    const tranAmt = parseAmtStr(anchor.tranAmt);
+    // settAmt is already signed (negative for 支出, positive for 还款/退货)
+    const isRefund = section.includes('退');
+    const isRepay = section.includes('还款');
+    const isInstall = section.includes('分期');
+
+    let io = '支出';
+    let signed = -Math.abs(settAmt);
+    if (isRefund || isRepay || settAmt > 0) {
+      io = isRepay ? '还款' : '退款';
+      signed = Math.abs(settAmt);
+    }
+
+    // Infer category
+    let cat = '网上消费';
+    if (isRepay) cat = '还款';
+    else if (isRefund) cat = '退款';
+    else if (isInstall) cat = '分期';
+    else if (/地铁|公交|打车|出行|交通|飞猪/.test(fullDesc)) cat = '交通出行';
+    else if (/餐|饭|食|美食|外卖|咖啡|tea/.test(fullDesc)) cat = '餐饮美食';
+    else if (/淘宝|京东|拼多多|抖音|天猫|快递/.test(fullDesc)) cat = '日用百货';
+    else if (/iCloud|Apple|腾讯|游戏|网易/.test(fullDesc)) cat = '游戏娱乐';
+
+    // Gateway: 财付通=wechat, 支付宝=alipay
+    let gateway = '';
+    if (fullDesc.includes('财付通')) gateway = 'wechat';
+    else if (fullDesc.includes('支付宝')) gateway = 'alipay';
+
+    txns.push({
+      id: uid(),
+      date: yymmddToDate(anchor.tDate),
+      amount: signed,
+      merchant: fullDesc,
+      description: fullDesc,
+      category: cat,
+      payMethod: '农行信用卡(' + anchor.card + ')',
+      source: 'agbank',
+      incomeExpense: io,
+      status: '已入账',
+      orderId: '',
+      merchantOrderId: '',
+      remark: '',
+      cardLast4: anchor.card,
+      gateway,
+      section,
+    });
+  }
+  return txns;
+}
+
+// ─────────────────────────────────────────────────────────
+// Deduplication Engine
+// ─────────────────────────────────────────────────────────
+function deduplicate(alipay, wechat, agbank) {
+  // Groups: { id, master, others[], confidence, sources[] }
+  const groups = [];
+  const matched = new Set();
+
+  // Index by (date, amount, card) for fast lookup
+  const makeKey = (date, amt, card) => dateOnly(date) + '|' + Math.abs(amt).toFixed(2) + '|' + (card||'');
+
+  // Build indices for Alipay and WeChat keyed by (date, |amount|, card)
+  const aliIdx  = buildIdx(alipay);
+  const wxIdx   = buildIdx(wechat);
+
+  function buildIdx(txns) {
+    const m = new Map();
+    for (const t of txns) {
+      const k = makeKey(t.date, t.amount, t.cardLast4);
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(t);
+      // Also key without card (for looser matching)
+      const k2 = makeKey(t.date, t.amount, '');
+      if (!m.has(k2)) m.set(k2, []);
+      m.get(k2).push(t);
+    }
+    return m;
+  }
+
+  // Try to match AgBank txn with Alipay/WeChat
+  function findMatch(ab, idx, srcTxns) {
+    const card = ab.cardLast4;
+    // Try exact date + amount + card
+    for (const dayOff of [0, 1, -1]) {
+      const d = new Date(ab.date);
+      d.setDate(d.getDate() + dayOff);
+      const dStr = d.toISOString().slice(0,10);
+      const k = makeKey(dStr, ab.amount, card);
+      const cands = (idx.get(k)||[]).filter(t => !matched.has(t.id) && isAgBankPayMethod(t.payMethod) && extractCard(t.payMethod) === card);
+      if (cands.length === 1) return { tx: cands[0], confidence: dayOff === 0 ? 'high' : 'medium' };
+      if (cands.length > 1) {
+        // Pick by best description similarity
+        cands.sort((a,b) => sim(ab.description, b.description) - sim(ab.description, a.description));
+        return { tx: cands[0], confidence: 'medium' };
+      }
+    }
+    // Looser: same amount ± 1 day, any AgBank card
+    for (const dayOff of [0, 1, -1]) {
+      const d = new Date(ab.date);
+      d.setDate(d.getDate() + dayOff);
+      const dStr = d.toISOString().slice(0,10);
+      const k = makeKey(dStr, ab.amount, '');
+      const cands = (idx.get(k)||[]).filter(t => !matched.has(t.id) && isAgBankPayMethod(t.payMethod));
+      if (cands.length === 1) return { tx: cands[0], confidence: 'low' };
+    }
+    return null;
+  }
+
+  for (const ab of agbank) {
+    if (matched.has(ab.id)) continue;
+    if (ab.section && (ab.section.includes('还款'))) {
+      // Don't try to match repayments
+      groups.push({ id: ab.id, master: ab, others: [], confidence: null, sources: ['agbank'] });
+      matched.add(ab.id);
+      continue;
+    }
+
+    let result = null;
+    // Try matching based on gateway hint
+    if (ab.gateway === 'wechat') result = findMatch(ab, wxIdx, wechat);
+    else if (ab.gateway === 'alipay') result = findMatch(ab, aliIdx, alipay);
+    else {
+      // Try both
+      result = findMatch(ab, wxIdx, wechat) || findMatch(ab, aliIdx, alipay);
+    }
+
+    if (result) {
+      const partner = result.tx;
+      matched.add(ab.id);
+      matched.add(partner.id);
+      // Master = Alipay/WeChat (richer description); secondary = AgBank
+      const srcSet = [partner.source, 'agbank'];
+      groups.push({
+        id: partner.id,
+        master: partner,
+        others: [ab],
+        confidence: result.confidence,
+        sources: srcSet,
+      });
+    } else {
+      groups.push({ id: ab.id, master: ab, others: [], confidence: null, sources: ['agbank'] });
+      matched.add(ab.id);
+    }
+  }
+
+  // Add unmatched Alipay + WeChat
+  for (const t of [...alipay, ...wechat]) {
+    if (!matched.has(t.id)) {
+      groups.push({ id: t.id, master: t, others: [], confidence: null, sources: [t.source] });
+      matched.add(t.id);
+    }
+  }
+
+  // Sort by date desc
+  groups.sort((a, b) => (b.master.date > a.master.date ? 1 : -1));
+  return groups;
+}
+
+// ─────────────────────────────────────────────────────────
+// Stats
+// ─────────────────────────────────────────────────────────
+function renderStats(groups) {
+  const expense = groups.filter(g => g.master.incomeExpense === '支出');
+  const income  = groups.filter(g => g.master.incomeExpense === '收入');
+  const totalExp = expense.reduce((s, g) => s + Math.abs(g.master.amount), 0);
+  const totalInc = income.reduce((s, g) => s + Math.abs(g.master.amount), 0);
+  const dedupCount = groups.filter(g => g.others.length > 0).length;
+  const totalRaw = _ali.length + _wx.length + _ab.length;
+
+  const el = document.getElementById('stats-row');
+  el.innerHTML = `
+    <div class="stat-card"><div class="stat-label">总支出</div><div class="stat-value red">¥${totalExp.toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-label">总收入</div><div class="stat-value green">¥${totalInc.toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-label">交易笔数（去重后）</div><div class="stat-value blue">${groups.length}</div></div>
+    <div class="stat-card"><div class="stat-label">原始记录总数</div><div class="stat-value">${totalRaw}</div></div>
+    <div class="stat-card"><div class="stat-label">跨源匹配条数</div><div class="stat-value purple">${dedupCount}</div></div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────
+// Charts
+// ─────────────────────────────────────────────────────────
+function renderCharts(groups) {
+  const expense = groups.filter(g => g.master.incomeExpense === '支出');
+
+  // Monthly bar
+  const monthMap = {};
+  for (const g of expense) {
+    const m = dateOnly(g.master.date).slice(0,7);
+    if (!m) continue;
+    monthMap[m] = (monthMap[m]||0) + Math.abs(g.master.amount);
+  }
+  const months = Object.keys(monthMap).sort();
+  const monthVals = months.map(m => +monthMap[m].toFixed(2));
+
+  if (_chartMonth) _chartMonth.destroy();
+  _chartMonth = new Chart(document.getElementById('chart-month'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [{ label: '支出(元)', data: monthVals, backgroundColor: 'rgba(22,119,255,.7)', borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { ticks: { callback: v => '¥'+v } } }
+    }
+  });
+
+  // Category pie
+  const catMap = {};
+  for (const g of expense) {
+    const c = g.master.category || '其他';
+    catMap[c] = (catMap[c]||0) + Math.abs(g.master.amount);
+  }
+  const catEntries = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,9);
+  const COLORS = ['#1677ff','#52c41a','#ff4d4f','#fa8c16','#722ed1','#13c2c2','#eb2f96','#fadb14','#8c8c8c'];
+
+  if (_chartCat) _chartCat.destroy();
+  _chartCat = new Chart(document.getElementById('chart-cat'), {
+    type: 'doughnut',
+    data: {
+      labels: catEntries.map(([k]) => catLabel(k)),
+      datasets: [{ data: catEntries.map(([,v]) => +v.toFixed(2)), backgroundColor: COLORS, borderWidth: 1 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } }
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+// Filters
+// ─────────────────────────────────────────────────────────
+function getFilters() {
+  return {
+    search: document.getElementById('f-search').value.trim().toLowerCase(),
+    from:   document.getElementById('f-from').value,
+    to:     document.getElementById('f-to').value,
+    type:   document.getElementById('f-type').value,
+    cat:    document.getElementById('f-cat').value,
+    ali:    document.getElementById('f-ali').checked,
+    wx:     document.getElementById('f-wx').checked,
+    ab:     document.getElementById('f-ab').checked,
+    dedup:  document.getElementById('f-dedup').checked,
+  };
+}
+
+function applyFilters(groups, f) {
+  return groups.filter(g => {
+    const m = g.master;
+    // Source filter
+    if (!f.ali && !f.wx && !f.ab) return false;
+    const visibleSrcs = [];
+    if (f.ali) visibleSrcs.push('alipay');
+    if (f.wx)  visibleSrcs.push('wechat');
+    if (f.ab)  visibleSrcs.push('agbank');
+    if (!g.sources.some(s => visibleSrcs.includes(s))) return false;
+    // Type
+    if (f.type && m.incomeExpense !== f.type) return false;
+    // Category
+    if (f.cat && m.category !== f.cat) return false;
+    // Date
+    if (f.from && dateOnly(m.date) < f.from) return false;
+    if (f.to   && dateOnly(m.date) > f.to)   return false;
+    // Search
+    if (f.search) {
+      const hay = (m.merchant + m.description + m.category + m.remark).toLowerCase();
+      if (!hay.includes(f.search)) return false;
+    }
+    return true;
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+// Table rendering
+// ─────────────────────────────────────────────────────────
+const SOURCE_LABEL = { alipay:'支付宝', wechat:'微信', agbank:'农行' };
+const SOURCE_BADGE = { alipay:'badge-ali', wechat:'badge-wx', agbank:'badge-ab' };
+const CONF_BADGE = { high:'badge-hi', medium:'badge-med', low:'badge-lo' };
+const CONF_LABEL = { high:'高', medium:'中', low:'低' };
+
+function renderTable() {
+  const f = getFilters();
+
+  // If dedup is off, flatten groups into individual rows
+  let rows;
+  if (f.dedup) {
+    rows = applyFilters(_groups, f);
+  } else {
+    // Show all individual transactions
+    const all = _groups.flatMap(g => [g.master, ...g.others]);
+    const indivGroups = all.map(t => ({ id: t.id, master: t, others: [], confidence: null, sources: [t.source] }));
+    rows = applyFilters(indivGroups, f);
+  }
+
+  _filtered = rows;
+  const total = rows.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+  if (_page > totalPages) _page = 1;
+
+  const pageRows = rows.slice((_page-1)*PAGE_SIZE, _page*PAGE_SIZE);
+
+  const tbody = document.getElementById('tbl-body');
+  const empty = document.getElementById('tbl-empty');
+
+  if (pageRows.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = pageRows.map(g => rowHtml(g, f.dedup)).join('');
+  }
+
+  renderPagination(total, totalPages);
+  document.getElementById('page-info').textContent =
+    total > 0 ? `共 ${total} 条，第 ${_page}/${totalPages} 页` : '';
+}
+
+function rowHtml(g, dedup) {
+  const m = g.master;
+  const isGrouped = dedup && g.others.length > 0;
+  const cls = isGrouped ? 'grouped' : '';
+
+  // Amount
+  const io = m.incomeExpense;
+  const amtCls = io === '支出' ? 'amt-exp' : io === '收入' ? 'amt-inc' : 'amt-neu';
+  const amtDisp = (io === '支出' ? '−' : io === '收入' ? '+' : '') +
+                  '¥' + Math.abs(m.amount).toFixed(2);
+
+  // Merchant / description
+  const merchant = m.merchant || m.description || '—';
+  const descExtra = (m.description && m.description !== m.merchant) ? m.description : '';
+
+  // Source badges
+  const sources = dedup ? g.sources : [m.source];
+  const srcBadges = [...new Set(sources)].map(s =>
+    `<span class="badge ${SOURCE_BADGE[s]}">${SOURCE_LABEL[s]||s}</span>`
+  ).join('');
+
+  // Match badge
+  let matchBadge = '';
+  if (isGrouped && g.confidence) {
+    matchBadge = `<span class="badge ${CONF_BADGE[g.confidence]}" title="匹配置信度">匹配·${CONF_LABEL[g.confidence]}</span>`;
+  }
+
+  const dedupeIcon = isGrouped ? ` <span class="dedupe-icon" title="已合并${g.others.length}条重复记录">⧉</span>` : '';
+
+  return `<tr class="${cls}">
+    <td style="white-space:nowrap">${dateOnly(m.date)}</td>
+    <td><span class="${amtCls}">${amtDisp}</span></td>
+    <td>
+      <div class="merchant">${esc(merchant)}${dedupeIcon}</div>
+      ${descExtra ? `<div class="desc">${esc(descExtra)}</div>` : ''}
+    </td>
+    <td>${catLabel(m.category)}</td>
+    <td><div class="tag-group">${srcBadges}</div></td>
+    <td style="white-space:nowrap;font-size:.78rem">${esc(m.payMethod||'—')}</td>
+    <td>${matchBadge}</td>
+  </tr>`;
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─────────────────────────────────────────────────────────
+// Pagination
+// ─────────────────────────────────────────────────────────
+function renderPagination(total, totalPages) {
+  const el = document.getElementById('pagination');
+  if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button ${_page===1?'disabled':''} data-p="${_page-1}">‹ 上页</button>`;
+
+  // Show up to 7 page buttons
+  const start = Math.max(1, _page-3);
+  const end   = Math.min(totalPages, _page+3);
+  if (start > 1) html += `<button data-p="1">1</button>${start>2?'<span>…</span>':''}`;
+  for (let i = start; i <= end; i++) {
+    html += `<button class="${i===_page?'active':''}" data-p="${i}">${i}</button>`;
+  }
+  if (end < totalPages) html += `${end<totalPages-1?'<span>…</span>':''}<button data-p="${totalPages}">${totalPages}</button>`;
+  html += `<button ${_page===totalPages?'disabled':''} data-p="${_page+1}">下页 ›</button>`;
+
+  el.innerHTML = html;
+  el.querySelectorAll('button[data-p]').forEach(btn => {
+    btn.addEventListener('click', () => { _page = +btn.dataset.p; renderTable(); });
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+// Category dropdown
+// ─────────────────────────────────────────────────────────
+function populateCatFilter(groups) {
+  const cats = [...new Set(groups.map(g => g.master.category).filter(Boolean))].sort();
+  const sel = document.getElementById('f-cat');
+  sel.innerHTML = '<option value="">全部分类</option>' +
+    cats.map(c => `<option value="${esc(c)}">${catLabel(c)}</option>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+// Main analysis controller
+// ─────────────────────────────────────────────────────────
+async function analyze() {
+  const aliFile = document.getElementById('ali-file').files[0];
+  const wxFile  = document.getElementById('wx-file').files[0];
+  const abFiles = document.getElementById('ab-file').files;
+
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('results').style.display  = 'none';
+  document.getElementById('analyze-btn').disabled   = true;
+
+  const setMsg = msg => { document.getElementById('progress-msg').textContent = msg; };
+
+  try {
+    _ali = []; _wx = []; _ab = [];
+
+    if (aliFile) {
+      setMsg('正在解析支付宝账单…');
+      const buf = await readFile(aliFile);
+      _ali = parseAlipayCSV(buf);
+      document.getElementById('ali-status').textContent = `✓ 已解析 ${_ali.length} 条记录`;
+    }
+
+    if (wxFile) {
+      setMsg('正在解析微信账单…');
+      const buf = await readFile(wxFile);
+      _wx = parseWechatXLSX(new Uint8Array(buf));
+      document.getElementById('wx-status').textContent = `✓ 已解析 ${_wx.length} 条记录`;
+    }
+
+    for (const f of abFiles) {
+      setMsg(`正在解析农行账单: ${f.name}…`);
+      const buf = await readFile(f);
+      const txns = await parseAgBankPDF(new Uint8Array(buf));
+      _ab.push(...txns);
+    }
+    if (abFiles.length > 0) {
+      document.getElementById('ab-status').textContent = `✓ 已解析 ${_ab.length} 条记录（${abFiles.length} 个文件）`;
+    }
+
+    setMsg('正在跨源去重匹配…');
+    _groups = deduplicate(_ali, _wx, _ab);
+
+    setMsg('正在渲染结果…');
+    renderStats(_groups);
+    renderCharts(_groups);
+    populateCatFilter(_groups);
+    _page = 1;
+    renderTable();
+
+    document.getElementById('progress').style.display = 'none';
+    document.getElementById('results').style.display  = 'block';
+
+  } catch (err) {
+    document.getElementById('progress').style.display = 'none';
+    alert('解析失败：' + err.message + '\n\n详见控制台');
+    console.error(err);
+  }
+
+  document.getElementById('analyze-btn').disabled = false;
+}
+
+function readFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = e => resolve(e.target.result);
+    reader.onerror = () => reject(new Error('文件读取失败: ' + file.name));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+// Event handlers
+// ─────────────────────────────────────────────────────────
+
+// Update upload cards on file selection
+function setupUploadCard(cardId, inputId, statusId) {
+  const card   = document.getElementById(cardId);
+  const input  = document.getElementById(inputId);
+  const status = document.getElementById(statusId);
+
+  input.addEventListener('change', () => {
+    if (input.files.length > 0) {
+      const names = [...input.files].map(f => f.name).join(', ');
+      status.textContent = '已选择: ' + names;
+      status.className = 'upload-status';
+      card.classList.add('loaded');
+      updateAnalyzeBtn();
+    }
+  });
+
+  // Drag-and-drop
+  card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('hover'); });
+  card.addEventListener('dragleave', () => card.classList.remove('hover'));
+  card.addEventListener('drop', e => {
+    e.preventDefault();
+    card.classList.remove('hover');
+    // Try direct assignment first; falls back to DataTransfer if the browser doesn't allow
+    // writing to input.files directly (some browsers only allow it via DataTransfer).
+    const dt = new DataTransfer();
+    for (const f of e.dataTransfer.files) dt.items.add(f);
+    input.files = dt.files;
+    const evt = new Event('change');
+    input.dispatchEvent(evt);
+  });
+}
+
+function updateAnalyzeBtn() {
+  const hasAli = document.getElementById('ali-file').files.length > 0;
+  const hasWx  = document.getElementById('wx-file').files.length > 0;
+  const hasAb  = document.getElementById('ab-file').files.length > 0;
+  const btn = document.getElementById('analyze-btn');
+  if (hasAli || hasWx || hasAb) {
+    btn.disabled = false;
+    btn.textContent = '开始分析 →';
+  } else {
+    btn.disabled = true;
+    btn.textContent = '上传至少一种账单后开始分析';
+  }
+}
+
+setupUploadCard('ali-card', 'ali-file', 'ali-status');
+setupUploadCard('wx-card',  'wx-file',  'wx-status');
+setupUploadCard('ab-card',  'ab-file',  'ab-status');
+
+document.getElementById('analyze-btn').addEventListener('click', analyze);
+
+// Filter listeners
+['f-search','f-from','f-to','f-type','f-cat'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { _page = 1; renderTable(); });
+});
+['f-ali','f-wx','f-ab','f-dedup'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => { _page = 1; renderTable(); });
+});
+document.getElementById('f-reset').addEventListener('click', () => {
+  document.getElementById('f-search').value = '';
+  document.getElementById('f-from').value   = '';
+  document.getElementById('f-to').value     = '';
+  document.getElementById('f-type').value   = '';
+  document.getElementById('f-cat').value    = '';
+  ['f-ali','f-wx','f-ab','f-dedup'].forEach(id => {
+    document.getElementById(id).checked = true;
+  });
+  _page = 1; renderTable();
+});
+
+</script>
+</body>
+</html>
